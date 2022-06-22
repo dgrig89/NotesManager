@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 
+import { useDispatch, useSelector } from "react-redux";
+import { directoriesActions } from "../../store/directories-slice.ts";
+
 import { DirectoryType } from "../../types/type";
+
+import LiItem from "./LiItem.tsx";
 
 const getRootId = (arr: DirectoryType[]) => {
   const roots = arr
@@ -9,43 +14,8 @@ const getRootId = (arr: DirectoryType[]) => {
   return roots[0]?.id;
 };
 
-const recursive = (
-  arr: DirectoryType[],
-  parentId: string,
-  node: HTMLElement
-) => {
-  let list = document.createElement("ul");
-  let itemHTML: HTMLLIElement;
-
-  const arrChildren: DirectoryType[] = arr
-    .map((item) => {
-      if (item.parentId === parentId) {
-        return item;
-      }
-    })
-    .filter((item) => item) as DirectoryType[];
-
-  for (const item of arrChildren) {
-    itemHTML = document.createElement("li");
-    itemHTML.innerHTML = item.name;
-    if (arrChildren.length > 0) {
-      recursive(arr, String(item.id), itemHTML);
-    }
-    list.appendChild(itemHTML);
-  }
-  if (list.parentElement != null) {
-    console.log("list.parentElement != null");
-    itemHTML.appendChild(list);
-  }
-
-  if (node) {
-    node.appendChild(list);
-  }
-  return;
-};
-
 const DirectoriesTree = () => {
-  const [directories, setDirectories] = useState<DirectoryType[]>([]);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -56,27 +26,25 @@ const DirectoriesTree = () => {
       }
       const responseData = await response.json();
 
-      setDirectories(responseData);
-      console.log("fetching data", responseData);
+      responseData.forEach((item) => {
+        dispatch(directoriesActions.addDirectory(item));
+      });
     };
     fetchData().catch((error) => {
       console.log("fetching error");
     });
   }, []);
 
-  const rootId = String(getRootId(directories));
-  console.log(rootId);
+  const directoriesData = useSelector(
+    (state: { directoriesSlice: { directories: DirectoryType[] } }) =>
+      state.directoriesSlice.directories
+  ) as DirectoryType[];
 
-  recursive(
-    directories,
-    rootId,
-    document.getElementById("tree") as HTMLDivElement
-  );
+  const rootId = String(getRootId(directoriesData));
 
-  console.log("rendering directories tree");
   return (
     <div id="tree">
-      <p>Folder Tree</p>
+      <LiItem parentId={rootId} />
     </div>
   );
 };
