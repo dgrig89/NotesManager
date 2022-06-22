@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 
 import { DirectoryType } from "../../types/type";
 
-const getTopId = (arr: DirectoryType[]) => {
-  const arrId = arr.map((item) => +item.id).sort();
-  return String(arrId[0]);
+const getRootId = (arr: DirectoryType[]) => {
+  const roots = arr
+    .map((item) => !item.parentId && item)
+    .filter((item) => item) as DirectoryType[];
+  return roots[0]?.id;
 };
 
 const recursive = (
@@ -62,12 +64,12 @@ const DirectoriesTree = () => {
     });
   }, []);
 
-  const topId = getTopId(directories);
+  const rootId = String(getRootId(directories));
+  console.log(rootId);
 
-  console.log("calling recursive function");
   recursive(
     directories,
-    topId,
+    rootId,
     document.getElementById("tree") as HTMLDivElement
   );
 
