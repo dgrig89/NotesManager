@@ -42,9 +42,18 @@ const DirectoriesTree = () => {
 
   const rootId = String(getRootId(directoriesData));
 
+  const renderDirectory: DirectoryType[] = (rootId) => {
+    const children = directoriesData.map(item => item.parentId === rootId)
+    .filter((item) => item) as DirectoryType[];
+    
+    return children.map(item => <DirectoryItem item = item /><ul>{renderDirectory(item.id)}</ul></DirectoyrItem>);
+  }
+  
+  const directoryList = renderDirectory(rootId);
+
   return (
     <div id="tree">
-      <LiItem parentId={rootId} hide={true} />
+      {directoryList}
     </div>
   );
 };
