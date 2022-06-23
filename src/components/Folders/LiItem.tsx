@@ -8,20 +8,18 @@ import { useSelector } from "react-redux";
 
 type PropsLi = { parentId: string; hide: boolean };
 
-const LiItem = (props: PropsLi) => {
+const DirectoryItem = (props: PropsLi) => {
   const directoriesData = useSelector(
     (state: { directoriesSlice: { directories: DirectoryType[] } }) =>
       state.directoriesSlice.directories
   ) as DirectoryType[];
 
-  const arrChildren: DirectoryType[] = directoriesData
-    .map((item) => {
-      if (item.parentId === props.parentId) {
-        return item;
-      }
-    })
+  const arrChildren: DirectoryType[] = (rootId) => {
+    const children = directoriesData.map(item => item.parentId === rootId)
     .filter((item) => item) as DirectoryType[];
-
+    
+    return children.map(item => <DirectoryItem item = item /><ul>{arrayChildren(item.id)}</ul></DirectoyrItem>);
+  }
   console.log(arrChildren);
   return (
     <li
@@ -29,24 +27,7 @@ const LiItem = (props: PropsLi) => {
         props.hide ? classes.hidden : classes.visible
       }`}
     >
-      {
-        (
-          directoriesData.find(
-            (item) => item.id === +props.parentId
-          ) as DirectoryType
-        )?.name
-      }
-      {arrChildren.length > 0 && (
-        <ul>
-          {arrChildren.map((item) => (
-            <LiItem
-              key={Math.random()}
-              parentId={String(item.id)}
-              hide={false}
-            />
-          ))}
-        </ul>
-      )}
+      {prop.children}
     </li>
   );
 };
