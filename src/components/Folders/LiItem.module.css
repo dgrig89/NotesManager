@@ -1,0 +1,18 @@
+.li {
+  font-size: 16px;
+  /* background-color: #ccc; */
+  height: auto;
+  text-align: left;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  /* border: 1px solid #444; */
+  /* list-style: none; */
+}
+
+.visible {
+  visibility: visible;
+}
+
+.hidden {
+  visibility: hidden;
+}

@@ -44,7 +44,7 @@ const DirectoriesTree = () => {
 
   return (
     <div id="tree">
-      <LiItem parentId={rootId} />
+      <LiItem parentId={rootId} hide={true} />
     </div>
   );
 };
